@@ -20,11 +20,20 @@ class App extends Component {
     this.setState({ players: playerList });
   };
 
+  removePlayer = name => {
+    const { players } = this.state;
+    delete players[name];
+    this.setState({ players });
+  };
+
   render() {
     return (
       <main>
-        <PlayerList players={this.state.players} />
         <SearchBar onSubmit={this.addPlayers} />
+        <PlayerList
+          players={this.state.players}
+          removePlayer={this.removePlayer}
+        />
       </main>
     );
   }
