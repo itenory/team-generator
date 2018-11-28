@@ -14,6 +14,32 @@ function addPlayers(text) {
   input.simulate('keyDown', { keyCode: 13, which: 13 });
 }
 
+/**
+ * Gets all the player elements from the PlayerList component.
+ * @return A array of elements in the PlayerList component
+ */
+function getPlayerListElems() {
+  return wrapper.find(PlayerList).find('li');
+}
+
+/**
+ * Finds a specific player's containing element if they're in the list by
+ *  comparing provided name with the one in the element.
+ * @param {string} name Name of player to search for.
+ * @return If player is found, return element containing player, null otherwise.
+ */
+function findPlayer(name) {
+  const playerList = getPlayerListElems();
+  let player = null;
+
+  playerList.map(listItem => {
+    if (listItem.find('span').text() === name) {
+      player = listItem;
+    }
+  });
+  return player;
+}
+
 describe('Editing the player list', () => {
   beforeEach(() => {
     wrapper = mount(<App />);
@@ -28,6 +54,8 @@ describe('Editing the player list', () => {
 
     const players = wrapper.find(PlayerList).find('li');
     expect(players.length).toBe(1);
+
+    expect(findPlayer(testPlayer).contains(testPlayer)).toBe(true);
   });
 
   test('Adding multiple players at once', () => {
@@ -46,7 +74,17 @@ describe('Editing the player list', () => {
     expect(players.length).toBe(1);
   });
 
-  test('Removing a player', () => {});
+  test('Removing a player', () => {
+    addPlayers(testPlayer);
+
+    const player = findPlayer(testPlayer);
+    player
+      .find('button')
+      .at(0)
+      .simulate('click');
+
+    expect(findPlayer(testPlayer)).toBe(null);
+  });
 
   test('Editing a player', () => {});
 });
